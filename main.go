@@ -9,6 +9,11 @@ import (
 	"os"
 )
 
+const usage = `usage: prs <users>
+
+Example: prs octocat greygore
+`
+
 type searchItem struct {
 	Title string `json:"title"`
 	User  struct {
@@ -27,6 +32,11 @@ type searchResults struct {
 
 func main() {
 	users := os.Args[1:]
+
+	if len(users) < 1 {
+		fmt.Print(usage)
+		return
+	}
 
 	items := getSearchResults(users)
 	displayItems(items)
