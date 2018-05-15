@@ -34,7 +34,7 @@ func main() {
 
 func endpoint(user string) string {
 	q := url.Values{}
-	q.Add("q", fmt.Sprintf("type:pr state:closed author:%s", user))
+	q.Add("q", fmt.Sprintf("type:pr state:open author:%s", user))
 	q.Add("sort", "created")
 	q.Add("order", "asc")
 
