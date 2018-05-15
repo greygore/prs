@@ -27,6 +27,20 @@ type searchResults struct {
 
 func main() {
 	users := os.Args[1:]
+
+	items := getSearchResults(users)
+	displayItems(items)
+}
+
+func endpoint(user string) string {
+	q := url.Values{}
+	q.Add("q", fmt.Sprintf("type:pr state:closed author:%s", user))
+
+	u := url.URL{Scheme: "https", Host: "api.github.com", Path: "search/issues", RawQuery: q.Encode()}
+	return u.String()
+}
+
+func getSearchResults(users []string) []searchItem {
 	items := []searchItem{}
 
 	for _, user := range users {
@@ -43,6 +57,10 @@ func main() {
 		items = append(items, results.Items...)
 	}
 
+	return items
+}
+
+func displayItems(items []searchItem) {
 	var currUser string
 	for _, item := range items {
 		if item.User.Login != currUser {
@@ -51,12 +69,4 @@ func main() {
 		}
 		fmt.Printf("\t%s\n\t\t%s\n", item.Title, item.PullRequest.HTML)
 	}
-}
-
-func endpoint(user string) string {
-	q := url.Values{}
-	q.Add("q", fmt.Sprintf("type:pr state:closed author:%s", user))
-
-	u := url.URL{Scheme: "https", Host: "api.github.com", Path: "search/issues", RawQuery: q.Encode()}
-	return u.String()
 }
