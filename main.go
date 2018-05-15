@@ -35,6 +35,8 @@ func main() {
 func endpoint(user string) string {
 	q := url.Values{}
 	q.Add("q", fmt.Sprintf("type:pr state:closed author:%s", user))
+	q.Add("sort", "created")
+	q.Add("order", "asc")
 
 	u := url.URL{Scheme: "https", Host: "api.github.com", Path: "search/issues", RawQuery: q.Encode()}
 	return u.String()
