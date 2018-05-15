@@ -56,6 +56,10 @@ func getSearchResults(users []string) []searchItem {
 		if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
 			log.Printf("Unable to decode pull requests for %s", user)
 		}
+		if results.Total > len(results.Items) {
+			log.Printf("%s has more results (%d) than default pagination (%d)", user, len(results.Items), results.Total)
+		}
+
 		items = append(items, results.Items...)
 	}
 
