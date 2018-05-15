@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 )
 
@@ -29,7 +30,7 @@ func main() {
 	items := []searchItem{}
 
 	for _, user := range users {
-		resp, err := http.Get(fmt.Sprintf("https://api.github.com/search/issues?q=type:pr%%20state:closed%%20author:%s", user))
+		resp, err := http.Get(endpoint(user))
 		if err != nil {
 			log.Printf("Unable to GET pull requests for %s", user)
 		}
@@ -46,8 +47,16 @@ func main() {
 	for _, item := range items {
 		if item.User.Login != currUser {
 			currUser = item.User.Login
-			fmt.Printf("%s:\n", item.User.Login)
+			fmt.Println(item.User.Login)
 		}
 		fmt.Printf("\t%s\n\t\t%s\n", item.Title, item.PullRequest.HTML)
 	}
+}
+
+func endpoint(user string) string {
+	q := url.Values{}
+	q.Add("q", fmt.Sprintf("type:pr state:closed author:%s", user))
+
+	u := url.URL{Scheme: "https", Host: "api.github.com", Path: "search/issues", RawQuery: q.Encode()}
+	return u.String()
 }
