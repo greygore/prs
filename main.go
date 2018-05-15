@@ -13,7 +13,7 @@ type searchItem struct {
 	Title string `json:"title"`
 	User  struct {
 		Login string `json:"login"`
-	}
+	} `json:"user"`
 	PullRequest struct {
 		HTML string `json:"html_url"`
 	} `json:"pull_request"`
